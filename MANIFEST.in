@@ -1,0 +1,9 @@
+recursive-include docs *.html *.css *.txt *.js *.jpg *.png *.py Makefile *.rst *.sty
+recursive-include tests *.py *.dat
+recursive-include akiban *.py *.dat
+
+include README* LICENSE CHANGES* test.cfg
+
+prune docs/build/output
+
+
