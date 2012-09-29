@@ -1,6 +1,9 @@
 import collections
 
-NESTED_CURSOR = object()
+class NestedCursor(object):
+    def __eq__(self, other):
+        return other == 5001 or isinstance(other, NestedCursor)
+NESTED_CURSOR = NestedCursor()
 
 
 class NestedCursor(object):

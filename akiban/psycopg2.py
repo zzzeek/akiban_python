@@ -74,7 +74,7 @@ class Psycopg2ResultContext(AkibanResultContext):
 
     def gen_description(self, fields):
         return [
-            (rec['name'], _psycopg2_type(rec['type_oid']),
+            (rec['name'], rec['type_oid'],
                     None, None, None, None, None)
             for rec in fields
         ]
@@ -89,7 +89,7 @@ class Psycopg2ResultContext(AkibanResultContext):
 
     def gen_akiban_description(self, fields):
         return [
-            (rec['name'], _psycopg2_type(rec['type_oid']),
+            (rec['name'], rec['type_oid'],
                     None, None, None, None, None,
                     self.gen_akiban_description(rec['akiban.fields'])
                     if 'akiban.fields' in rec else None

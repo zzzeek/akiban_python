@@ -39,6 +39,15 @@ class Psycopg2Test(unittest.TestCase):
             ]
         )
 
+    def test_typecodes_hashable(self):
+        cursor = self.connection.cursor()
+        cursor.execute(
+                "select customer_id, name from customers where customer_id=5")
+        self.assertEquals(
+            set([cursor.description[1][1]]),
+            set([1043])
+        )
+
     def test_nested_description_toplevel(self):
         cursor = self.connection.cursor()
         cursor.execute(
