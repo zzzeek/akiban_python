@@ -1,6 +1,11 @@
 import os
 import re
-from distutils.core import setup
+
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 v = open(os.path.join(os.path.dirname(__file__), 'akiban', '__init__.py'))
 VERSION = re.compile(r".*__version__ = '(.*?)'", re.S).match(v.read()).group(1)
@@ -31,6 +36,5 @@ setup(name='akiban',
       include_package_data=True,
       tests_require=['nose >= 0.11'],
       test_suite="nose.collector",
-      zip_safe=False,
-      install_requires=requires
+      zip_safe=False
 )
