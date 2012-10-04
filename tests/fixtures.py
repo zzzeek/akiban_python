@@ -2,6 +2,10 @@ def _table_fixture(connection):
     connection.autocommit = True
     cursor = connection.cursor()
 
+    cursor.execute("""DROP TABLE IF EXISTS items""")
+    cursor.execute("""DROP TABLE IF EXISTS orders""")
+    cursor.execute("""DROP TABLE IF EXISTS customers""")
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS customers
       (

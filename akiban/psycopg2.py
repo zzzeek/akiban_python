@@ -131,16 +131,25 @@ def _psycopg2_type(type_oid):
 class Connection(psycopg2.extensions.connection):
     def __init__(self, dsn, async=0):
         super(Connection, self).__init__(dsn, async=async)
-        self.autocommit = True
-        self._super_cursor().execute("set OutputFormat='json_with_meta_data'")
-        self.autocommit = False
-
+        self._nested = False
 
     def _super_cursor(self, *arg, **kw):
         return super(Connection, self).cursor(*arg, **kw)
 
-    def cursor(self):
-        return self._super_cursor(cursor_factory=Cursor)
+    def cursor(self, nested=True):
+        if nested:
+            cursor = self._super_cursor(cursor_factory=Cursor)
+        else:
+            cursor = self._super_cursor()
+        return self._set_output_format(cursor, nested)
+
+    def _set_output_format(self, cursor, nested):
+        if nested is not self._nested:
+            cursor.execute("set OutputFormat='%s'" %
+                        ('json_with_meta_data' if nested else 'table')
+                    )
+            self._nested = nested
+        return cursor
 
 # TODO: need to get per-connection adapters going
 # (or get akiban to recognize bool, easier)

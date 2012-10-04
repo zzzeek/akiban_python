@@ -250,3 +250,20 @@ class Psycopg2Test(unittest.TestCase):
             )
 
         self.assertEquals(cursor.fetchmany(2), [])
+
+    def test_non_nested_disables_json(self):
+        cursor = self.connection.cursor(nested=False)
+        self.assertRaises(
+            psycopg2.ProgrammingError,
+            cursor.execute,
+            "select customer_id, (select order_id from orders) from customers"
+        )
+
+    def test_non_nested_returns_rows(self):
+        cursor = self.connection.cursor(nested=False)
+        cursor.execute("select customer_id, name from customers "
+                            "where customer_id in (5, 6, 7)")
+        self.assertEquals(
+            cursor.fetchall(),
+            [(5, 'Peter Beaman'), (6, 'Thomas Jones-Low'), (7, 'Mike McMahon')]
+        )
