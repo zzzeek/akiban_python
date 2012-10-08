@@ -1,9 +1,13 @@
 import collections
 
-class NestedCursor(object):
+class NestedCursorType(object):
     def __eq__(self, other):
-        return other == 5001 or isinstance(other, NestedCursor)
-NESTED_CURSOR = NestedCursor()
+        return other == 5001 or isinstance(other, NestedCursorType)
+
+    def __hash__(self):
+        return hash(5001)
+
+NESTED_CURSOR = NestedCursorType()
 
 
 class NestedCursor(object):

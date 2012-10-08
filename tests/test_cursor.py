@@ -1,4 +1,6 @@
 import unittest
+from akiban import api
+
 
 NUMBER = object()
 STRING = object()
@@ -25,6 +27,10 @@ class NestedCursorTest(unittest.TestCase):
             ]
         )
         return cursor
+
+    def test_typecode_hashable(self):
+        s = set([5001, api.NESTED_CURSOR, api.NestedCursorType()])
+        self.assertEquals(len(s), 1)
 
     def test_fetchone(self):
         cursor = self._fixture()
