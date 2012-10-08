@@ -122,12 +122,6 @@ class Psycopg2ResultContext(AkibanResultContext):
             return value
 
 
-def _psycopg2_type(type_oid):
-    if type_oid == _NESTED_OID:
-        return NESTED_CURSOR
-    else:
-        return psycopg2.extensions.string_types[type_oid]
-
 class Connection(psycopg2.extensions.connection):
     def __init__(self, dsn, async=0):
         super(Connection, self).__init__(dsn, async=async)

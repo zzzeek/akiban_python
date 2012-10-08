@@ -40,3 +40,6 @@ class NestedCursor(object):
         l = list(self._rows)
         r, self._rows = l[0:size], collections.deque(l[size:])
         return r
+
+    def close(self):
+        pass

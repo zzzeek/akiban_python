@@ -32,6 +32,12 @@ class NestedCursorTest(unittest.TestCase):
         s = set([5001, api.NESTED_CURSOR, api.NestedCursorType()])
         self.assertEquals(len(s), 1)
 
+    def test_close(self):
+        cursor = self._fixture()
+        # doesn't actually do anything right now, just needed
+        # by the API
+        cursor.close()
+
     def test_fetchone(self):
         cursor = self._fixture()
         self.assertEquals(
