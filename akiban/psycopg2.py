@@ -114,6 +114,13 @@ class Psycopg2ResultContext(AkibanResultContext):
             else:
                 adapter = _psycopg2_adapter_cache[oid] = None
 
+            # hardwire STRING types to not use adapters, since we're
+            # getting string data back already.  Akiban seems to be
+            # sending fully unicode data back even without using psycopg2
+            # unicode extensions.
+            if adapter is not None and adapter == psycopg2.STRING:
+                _psycopg2_adapter_cache[oid] = adapter = None
+
         if adapter:
             # TODO: do we send the oid or the adapter
             # as the argument here?

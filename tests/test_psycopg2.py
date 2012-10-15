@@ -1,3 +1,4 @@
+# coding:utf-8
 import unittest
 from nose import SkipTest
 from . import fixtures, fails
@@ -215,6 +216,13 @@ class Psycopg2Test(unittest.TestCase):
                 "select some_bool from customers where "
                 "customer_id=5")
         self.assertEquals(cursor.fetchone()[0], True)
+
+    def test_typecast_unicode(self):
+        cursor = self.connection.cursor()
+
+        # wow
+        cursor.execute(u"select 'drôle m’a réveillé'")
+        self.assertEquals(cursor.fetchone()[0], u'drôle m’a réveillé')
 
     def test_fetchone_plain(self):
         cursor = self.connection.cursor()
