@@ -49,10 +49,11 @@ Above, we've selected from a table ``customers``, including a nested
 result set for ``orders``.  Within that of ``orders``, we have another
 nested result against ``items``. Inspecting ``cursor.description``, we
 see the three outermost columns represented, all normally except for
-``orders`` which has a special typecode ``NESTED_CURSOR``::
+``orders`` which has a special typecode "5001", which will compare as
+``True`` to the ``akiban.api.NESTED_CURSOR`` DBAPI constant::
 
   >>> cursor.description
-  [(u'customer_id', <psycopg2._psycopg.type 'INTEGER' at 0x10060a368>, None, None, None, None, None), (u'name', <psycopg2._psycopg.type 'STRING' at 0x10060a4c8>, None, None, None, None, None), (u'orders', <object object at 0x1002af0c0>, None, None, None, None, None)]
+  [(u'customer_id', 23, None, None, None, None, None), (u'name', 1043, None, None, None, None, None), (u'orders', 5001, None, None, None, None, None)]
 
 If we fetch the first row, it looks mostly normal except for one column that contains a "nested cursor"::
 
@@ -64,7 +65,7 @@ looking at the ``orders`` column, we can see that the value is itself a cursor, 
 
   >>> subcursor = row[2]
   >>> subcursor.description
-  [(u'order_id', <psycopg2._psycopg.type 'INTEGER' at 0x10060a368>, None, None, None, None, None), (u'order_info', <psycopg2._psycopg.type 'STRING' at 0x10060a4c8>, None, None, None, None, None), (u'items', <object object at 0x1002af0c0>, None, None, None, None, None)]
+  [(u'order_id', 23, None, None, None, None, None), (u'order_info', 1043, None, None, None, None, None), (u'items', 5001, None, None, None, None, None)]
 
 Fetching a row from this cursor, we see it has its own nested data::
 
@@ -76,7 +77,7 @@ and continuing the process, we can see ``items`` column of this row contains ano
 
   >>> subsubcursor = subrow[2]
   >>> subsubcursor.description
-  [(u'item_id', <psycopg2._psycopg.type 'INTEGER' at 0x10060a368>, None, None, None, None, None), (u'price', <psycopg2._psycopg.type 'DECIMAL' at 0x10060a418>, None, None, None, None, None), (u'quantity', <psycopg2._psycopg.type 'INTEGER' at 0x10060a368>, None, None, None, None, None)]
+  [(u'item_id', 23, None, None, None, None, None), (u'price', 1700, None, None, None, None, None), (u'quantity', 23, None, None, None, None, None)]
 
 We can also access all levels of ".description" in one step from the
 lead result, using the extension ".akiban_description".  This is
@@ -85,7 +86,7 @@ it produces 8-tuples, instead of 7-tuples.  The eighth member of the
 tuple contains the sub-description, if any::
 
   >>> cursor.akiban_description
-  [(u'customer_id', <psycopg2._psycopg.type 'INTEGER' at 0x10068a3c0>, None, None, None, None, None, None), (u'name', <psycopg2._psycopg.type 'STRING' at 0x10068a520>, None, None, None, None, None, None), (u'orders', <object object at 0x1002af0c0>, None, None, None, None, None, [(u'order_id', <psycopg2._psycopg.type 'INTEGER' at 0x10068a3c0>, None, None, None, None, None, None), (u'order_info', <psycopg2._psycopg.type 'STRING' at 0x10068a520>, None, None, None, None, None, None), (u'items', <object object at 0x1002af0c0>, None, None, None, None, None, [(u'item_id', <psycopg2._psycopg.type 'INTEGER' at 0x10068a3c0>, None, None, None, None, None, None), (u'price', <psycopg2._psycopg.type 'DECIMAL' at 0x10068a470>, None, None, None, None, None, None), (u'quantity', <psycopg2._psycopg.type 'INTEGER' at 0x10068a3c0>, None, None, None, None, None, None)])])]
+  [(u'customer_id', 23, None, None, None, None, None, None), (u'name', 1043, None, None, None, None, None, None), (u'orders', 5001, None, None, None, None, None, [(u'order_id', 23, None, None, None, None, None, None), (u'order_info', 1043, None, None, None, None, None, None), (u'items', 5001, None, None, None, None, None, [(u'item_id', 23, None, None, None, None, None, None), (u'price', 1700, None, None, None, None, None, None), (u'quantity', 23, None, None, None, None, None, None)])])]
 
 All those descriptions are nice, but how do we just get all those rows
 back?   We need to recursively descend through the nested cursors.

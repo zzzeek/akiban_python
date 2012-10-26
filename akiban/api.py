@@ -7,6 +7,9 @@ class NestedCursorType(object):
     def __hash__(self):
         return hash(5001)
 
+    def __repr__(self):
+        return "<akiban.api.NESTED_CURSOR>"
+
 NESTED_CURSOR = NestedCursorType()
 
 
